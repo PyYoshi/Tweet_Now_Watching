@@ -1,0 +1,39 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="popup.css" />
+<script type='text/javascript'>
+	function preinfo(){
+		chrome.tabs.getSelected( null, function (tab) {
+			title = tab.title;
+			var url = tab.url;
+			document.getElementById('text').value = "NowWatching: "+title+" ";
+			var request = new XMLHttpRequest();
+			var shorturl = "";
+			request.open('GET',"http://twitter.com/share?url="+encodeURIComponent(url),true);
+			request.onreadystatechange = function(){
+				if(request.readyState == 4 && request.status == 200) {
+	                        	var resText = request.responseText;
+					var tmp1 = resText.search('<textarea id="status" name="status" aria-required="true" aria-describedby="notice"> ');
+					var tmp2 = resText.search('</textarea>');
+					shorturl = request.responseText.substring(tmp1+84,tmp2);
+					document.getElementById('text').value += shorturl;
+				}
+			}
+			request.send("");
+		})	
+	}
+	function post(){
+		posturl = 'http://twitter.com/home?status='+encodeURIComponent(document.getElementById('text').value);
+		chrome.tabs.create({url:posturl});				
+		window.close();
+	}
+</script>
+</head>
+<body onload='preinfo();'>
+	<div id='area'>
+	<textarea id='text' cols='32' rows='4'></textarea><br>
+	<input type="button" value="TweetNow" id="post" onclick='post();'>
+	</div>
+</body>
+</html>

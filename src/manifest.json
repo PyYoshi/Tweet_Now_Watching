@@ -1,0 +1,14 @@
+{
+  "update_url":"http://clients2.google.com/service/update2/crx",
+  "name": "Tweet Now Watching!",
+  "version": "0.5",
+  "description": "Share currently watched web page on Twitter.",
+  "browser_action": {
+    "default_icon": "tw48.png",
+    "popup": "popup.html" 
+  },
+   "icons": {
+     "48": "tw48.png"
+   },
+  "permissions": ["tabs", "http://twitter.com/*", "https://twitter.com/*"]
+} 
