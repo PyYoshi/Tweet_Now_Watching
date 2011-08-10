@@ -1,7 +1,7 @@
 {
   "update_url":"http://clients2.google.com/service/update2/crx",
   "name": "Tweet: Now Watching!",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Share currently watched web page on Twitter.",
   "browser_action": {
     "default_icon": "tw48.png",

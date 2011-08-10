@@ -4,7 +4,7 @@
 <link rel="stylesheet" type="text/css" href="popup.css" />
 <script type='text/javascript'>
 	//設定
-	DEBUG = false;
+	DEBUG = true;
 	
 	//デバッグ用関数
 	function LOGD(str){
@@ -92,7 +92,7 @@
 		document.getElementById('text').value = "processing...";
 		document.getElementById('post_button').disabled = true;
 		document.getElementById('create_tab_and_post').disabled = true;
-		new chrome.tabs.getSelected( null, 
+		chrome.tabs.getSelected( null,
 				function (tab) {
 					var tab_title = tab.title;
 					var tab_url = tab.url;
@@ -148,17 +148,17 @@
 							document.getElementById('text').value = "Oops, something went wrong, please try again.";
 							document.getElementById('post_button').disabled = true;
 						}
-					}
+					};
 					LOGD(xhr);
 					xhr.send("");
 				}
 			);
-	}
+	};
 	
 	//投稿
 	function post(){
 		var tw = new TwWatch();
-		var result = tw.update()
+		var result = tw.update();
 		if(result == true){
 			//textareaの初期化
 			//document.getElementById('text').value = "";
@@ -204,7 +204,7 @@
 		var	s, l;
 		s = document.getElementById("text").value;
 		//s = s.replace(/\s|　/g,"a");
-		l = 140 - s.length
+		l = 140 - s.length;
 		LOGD(l);
 		document.getElementById("char-count").innerHTML = l;
 		document.getElementById("char-count").removeAttribute("style");
