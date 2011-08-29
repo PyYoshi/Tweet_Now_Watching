@@ -15,7 +15,7 @@
 	
 	//クラス
 	var TwWatch = function(){
-		//ログインチェック まだ実装できていない。
+		//ログインチェック
 		this.login_check = function(rawText){
 			var html = document.createElement("div");
 			html.innerHTML = rawText;
@@ -32,13 +32,6 @@
 				return false;
 			}
 			
-		}
-		//短縮URLの取得
-		this.shortenURL = function(rawText){
-			var html = document.createElement("div");
-			html.innerHTML = rawText;
-			var shtURL = document.evaluate('.//input[@name="shortened_url"]', html, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).value;
-			return shtURL;
 		}		
 		//authenticity_tokenの取得
 		this.token = function(rawText){
@@ -51,7 +44,7 @@
 		this.update = function(){
 			try{
 				if(document.getElementById('create_tab_and_post').checked){
-					posturl = 'http://twitter.com/home?status='+encodeURIComponent(document.getElementById('text').value);
+					posturl = 'http://twitter.com/home?status='+encodeURIComponent(document.getElementById('text').value+" "+document.getElementById('url').value);
 					chrome.tabs.create({url:posturl});
 					return true;
 				}
@@ -59,7 +52,7 @@
 					var obj = {
 						"authenticity_token":document.getElementById('prepare_auth_token').value,
 						"siv":"",
-						"status":document.getElementById('text').value,
+						"status":document.getElementById('text').value+" "+document.getElementById('url').value,
 					};
 					var data = new FormData();
 					data = queryString(obj, false);
@@ -109,17 +102,22 @@
 							LOGD("===============responseText = end==============");
 							//ログインしている
 							var chklgn = tw.login_check(tmp);
-							//var chklgn = true;
 							LOGD("Are you login?: " + chklgn);
 							if(chklgn == true){
-								var shtURL = tw.shortenURL(tmp);
-								LOGD("shtURL: " + shtURL);
 								var auth_token = tw.token(tmp);
 								LOGD("auth_token: " + auth_token);
-								var status = "NowBrowsing: " + tab_title + " " + shtURL;
+								// ステータスフォーマット
+								var postHeader = localStorage["customPostHeader"];
+								if(!postHeader){
+									postHeader = "NowBrowsing";
+								}
+								var status = postHeader + ": " + tab_title;
+								// URLを別表記
 								LOGD("status: " + status);
+								LOGD("URL: " + tab_url);
 								//投稿準備
 								document.getElementById('text').value = status;
+								document.getElementById('url').value = tab_url;
 								char_count();
 								var cntLen = document.getElementById('text');
 								cntLen.onkeyup = function(){
@@ -200,15 +198,18 @@
 	}
 	
 	//文字数カウント
+	// 短縮URLフォーマット例: http://t.co/PyyHnoY (19文字) ← これを予約数とする。
 	function char_count(){
-		var	s, l;
+		var s, l;
 		s = document.getElementById("text").value;
-		//s = s.replace(/\s|　/g,"a");
-		l = 140 - s.length;
-		LOGD(l);
+		l = 121 - s.length;
 		document.getElementById("char-count").innerHTML = l;
 		document.getElementById("char-count").removeAttribute("style");
-		if(l<0){
+		if(l>=0){
+			document.getElementById("char-count").style.color = " #999";
+			document.getElementById("char-count").style.fontWeight = "bold";
+		}
+		else if(l<0){
 			document.getElementById("char-count").style.color = "#FF0000";
 			document.getElementById("char-count").style.fontWeight = "bold";
 		}
@@ -227,7 +228,8 @@
 			</h1>
 		</div>
 		<div class="update_area">
-			<textarea id='text' cols='32' rows='3'></textarea><br>
+			      <textarea id='text' cols='32' rows='3' onkeyup="char_count();" onkeydown="char_count();"></textarea><br>
+			      <input type="text" id='url' cols='32' rows='1'><br>
 		</div>
 		<div class="footter">
 			<span id="char-count"></span>

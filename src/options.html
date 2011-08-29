@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<!--
+ * Copyright (c) 2010 The Chromium Authors. All rights reserved.  Use of this
+ * source code is governed by a BSD-style license that can be found in the
+ * LICENSE file.
+-->
+<html>
+<head>
+  <title id=optionsTitle>Tweet Now Browsing! settings</title>
+  <link href="tw48.png" rel="shortcut icon" />  
+
+<script type="text/javascript">
+// localStorageÇ…ê›íËÇï€ë∂
+function save_options() {
+  var text = document.getElementById("customPostHeader").value;
+  localStorage["customPostHeader"] = text;
+
+  // Update status to let user know options were saved.
+  var status = document.getElementById("status");
+  status.innerHTML = "Options Saved.";
+  document.getElementById('status').style.display = "block";
+  setTimeout(function() {
+    status.innerHTML = "";
+    document.getElementById('status').style.display = "none";
+  }, 750);
+}
+
+// localStorageÇ©ÇÁê›íËÇì«Ç›èoÇ∑
+function restore_options(){
+  var text = localStorage["customPostHeader"];
+  if (text) {
+    document.getElementById("customPostHeader").value = text;
+  }
+  else{
+    return;
+  }
+}
+
+window.onload = function(){
+	restore_options();
+};
+
+</script>
+
+  <style>
+body, input, button, textarea {
+	font-family: "Helvetica Neue","Lucida Grande",Helvetica,Tahoma,Verdana,Arial,sans-serif;
+	color: #333;
+	background-color: "#ebeff9";
+}
+body {
+	min-height: 400px;
+	height: auto;
+	background: -webkit-gradient(linear,left top,left bottom,from(#bfdfff),to(#ffffff)) no-repeat;
+}
+    #content {
+      background-color: white;
+      border: 4px solid #B5C7DE;
+      border-radius: 12px;
+      margin: 40px auto 20px;
+      padding: 8px;
+      width: 600px;
+    }
+    .option_row {
+      clear: left;
+      padding: 2em 1em 0;
+      text-align:center
+    }
+    #status {
+      background-color: rgb(255, 241, 168);
+      display: none;
+      margin-left: 3px;
+      padding: 1px 2px;
+      text-align: center;
+      font-size: 15px;
+
+    }
+    #customPostHeader .customPostHeader{
+      min-width: 250px;
+      width: auto;
+    }
+    #logo {
+      text-align: center;
+    }
+    #extensionName {
+      color: #444;
+      font: 25px Helvetica Neue,Arial,"Lucida Grande",Sans-serif;
+    }
+#save_bottom {
+	width: 34px;
+	-webkit-border-radius: 4px;
+	background: #DDD url(./item/bg-btn.gif) repeat-x 0 0;
+	border-color: #BBB #BBB #999;
+	border-radius: 4px;
+	border-style: solid;
+	border-width: 1px;
+	cursor: pointer;
+	display: inline-block;
+	font: 14px/15px Helvetica Neue,Arial,"Lucida Grande",Sans-serif;
+	margin: 0;
+	overflow: hidden;
+	padding: 5px 9px 5px 9px;
+	text-shadow: 0 1px #F0F0F0;
+	color: #333;
+	-wekbit-box-shadow: 0 1px 0 #F8F8F8;
+	box-shadow: 0 1px 0 #F8F8F8;
+	position:relative;
+	left:45%
+}
+
+  </style>
+
+</head>
+<body>
+  <div id="content">
+    <label id="status"></label>
+    <div id = "logo">
+      <label id="extensionName" >Tweet: Now Browsing!</label>
+    </div>
+
+    <div class="option_row">
+        <table cellpadding=1 width=100%>
+          <tr>
+            <td width="15%">
+              &nbsp;
+            </td>
+            <td width="40%">
+	      <span class="customPostHeader" title="" align="left">Custom post-header:</span>
+            </td>
+            <td width="30%" >
+              <input type="text" id="customPostHeader" name="customPostHeader" >
+            </td>
+            <td width="15%">
+              &nbsp;
+            </td>
+          </tr>
+        </table>
+	<br>
+	<input type="bottom" value="Save" id="save_bottom" onclick="save_options();restore_options();">
+      </div>
+  </div>
+</body>
+</html>

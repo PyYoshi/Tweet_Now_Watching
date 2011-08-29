@@ -37,6 +37,10 @@ img#tw_png {
 	min-width: 280px;
 	width: auto;
 }
+.update_area, .footter, #url {
+	min-width: 280px;
+	width: auto;
+}
 
 .update_area {
 	-webkit-border-radius: 8px;
