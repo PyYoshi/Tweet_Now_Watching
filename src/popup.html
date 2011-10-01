@@ -198,11 +198,13 @@
 	}
 	
 	//文字数カウント
-	// 短縮URLフォーマット例: http://t.co/PyyHnoY (19文字) ← これを予約数とする。
+	// 短縮URLフォーマット例: http://t.co/PyyHnoY (19文字、twitter側だと21文字が予約されている) ← これを予約数とする。
 	function char_count(){
 		var s, l;
 		s = document.getElementById("text").value;
-		l = 121 - s.length;
+		var reserve = 21;
+		var space = 1;//文とurlの区切り
+		l = 140 - reserve - s.length - space;
 		document.getElementById("char-count").innerHTML = l;
 		document.getElementById("char-count").removeAttribute("style");
 		if(l>=0){
