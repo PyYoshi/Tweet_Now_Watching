@@ -1,224 +1,11 @@
-<html>
+﻿<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="popup.css" />
-<script type='text/javascript'>
-	//設定
-	DEBUG = false;
-	
-	//デバッグ用関数
-	function LOGD(str){
-		if(DEBUG == true){
-			console.log(str);
-		} 
-	}
-	
-	//クラス
-	var TwWatch = function(){
-		//ログインチェック
-		this.login_check = function(rawText){
-			var html = document.createElement("div");
-			html.innerHTML = rawText;
-			var username_or_email_length = document.evaluate('.//input[@id="username_or_email"]', html, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null).snapshotLength;
-			var password_length = document.evaluate('.//input[@id="password"]', html, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null).snapshotLength;
-			LOGD("username_or_email_length: " + username_or_email_length);
-			LOGD("password_length: " + password_length);
-			if(username_or_email_length == 0 && password_length == 0){
-				//ログインしている
-				return true;
-			}
-			else{
-				//ログインしていない または何らかのエラー
-				return false;
-			}
-			
-		}		
-		//authenticity_tokenの取得
-		this.token = function(rawText){
-			var html = document.createElement("div");
-			html.innerHTML = rawText;
-			var auth_token = document.evaluate('.//input[@name="authenticity_token"]', html, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).value;
-			return auth_token;
-		}
-		//投稿
-		this.update = function(){
-			try{
-				if(document.getElementById('create_tab_and_post').checked){
-					posturl = 'http://twitter.com/home?status='+encodeURIComponent(document.getElementById('text').value+" "+document.getElementById('url').value);
-					chrome.tabs.create({url:posturl});
-					return true;
-				}
-				else{
-					var obj = {
-						"authenticity_token":document.getElementById('prepare_auth_token').value,
-						"siv":"",
-						"status":document.getElementById('text').value+" "+document.getElementById('url').value,
-					};
-					var data = new FormData();
-					data = queryString(obj, false);
-					LOGD(data);
-					var xhr = new XMLHttpRequest();
-					var url = "https://twitter.com/status/update";
-					xhr.open("POST", url, true);
-					xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-					xhr.onreadystatechange = function(){		
-						if(xhr.readyState == 4 && xhr.status == 200) {
-							window.close();
-						}
-					}
-					LOGD(xhr);
-					xhr.send(data);
-					return true;
-				}
-			}
-			catch(e){
-				LOGD("update() error: ");
-				LOGD(e);
-				return false;
-			}
-		}
-	}
-
-	//読み込み終了と同時に実行
-	window.onload = function(){
-		//投稿ボタンの無効化
-		document.getElementById('text').value = "processing...";
-		document.getElementById('post_button').disabled = true;
-		document.getElementById('create_tab_and_post').disabled = true;
-		chrome.tabs.getSelected( null,
-				function (tab) {
-					var tab_title = tab.title;
-					var tab_url = tab.url;
-					var tw = new TwWatch();
-					var get_url = "http://twitter.com/intent/tweet?url=" + encodeURIComponent(tab_url);
-					var xhr = new XMLHttpRequest();
-					xhr.open("GET", get_url,true);
-					xhr.setRequestHeader("Accept-Language","en-us");
-					xhr.onreadystatechange = function(){		
-						if(xhr.readyState == 4 && xhr.status == 200) {
-							var tmp = xhr.responseText;
-							LOGD("===============responseText start==============");
-							LOGD(tmp);
-							LOGD("===============responseText = end==============");
-							//ログインしている
-							var chklgn = tw.login_check(tmp);
-							LOGD("Are you login?: " + chklgn);
-							if(chklgn == true){
-								var auth_token = tw.token(tmp);
-								LOGD("auth_token: " + auth_token);
-								// ステータスフォーマット
-								var postHeader = localStorage["customPostHeader"];
-								if(!postHeader){
-									postHeader = "NowBrowsing";
-								}
-								var status = postHeader + ": " + tab_title;
-								// URLを別表記
-								LOGD("status: " + status);
-								LOGD("URL: " + tab_url);
-								//投稿準備
-								document.getElementById('text').value = status;
-								document.getElementById('url').value = tab_url;
-								char_count();
-								var cntLen = document.getElementById('text');
-								cntLen.onkeyup = function(){
-									char_count();
-								}
-								document.getElementById('prepare_auth_token').value = auth_token;
-								//投稿準備が完了したので投稿ボタンの有効化等
-								document.getElementById('post_button').disabled = false;
-								document.getElementById('create_tab_and_post').disabled = false;
-							}
-							//ログインしていない
-							else if(chklgn == false){
-								document.getElementById('text').value = "Oops, Log in to twitter.com!";
-								document.getElementById('post_button').setAttribute("type", "hidden");
-								document.getElementById('option').style.display = "none";
-								document.getElementById('visit_twitter').setAttribute("type", "button");
-							}
-							//何らかのエラー
-							else{
-								document.getElementById('text').value = "Oops, something went wrong, please try again.";
-								document.getElementById('post_button').disabled = true;
-							}
-						}
-						//何らかのエラー
-						else{
-							document.getElementById('text').value = "Oops, something went wrong, please try again.";
-							document.getElementById('post_button').disabled = true;
-						}
-					};
-					LOGD(xhr);
-					xhr.send("");
-				}
-			);
-	};
-	
-	//投稿
-	function post(){
-		var tw = new TwWatch();
-		var result = tw.update();
-		if(result == true){
-			//textareaの初期化
-			//document.getElementById('text').value = "";
-			char_count()
-		}
-		else{
-			document.getElementById('text').value = "Oops, something went wrong, please try again.";
-			window.alert("Oops, something went wrong, please try again.");
-		}
-	}
-	
-	//Twitterログインページを開く
-	function visit_twitter(){
-	        chrome.tabs.create({url:"http://twitter.com/login"});
-	}
-	
-	//Taberarelooのutils.jsから引用
-	function queryString(params, question){
-		if(isEmpty(params)) return '';
-		if(typeof(params)==='string') return params;
-		var qeries = [];
-		for(var key in params){
-			var value = params[key];
-			if(value===null)
-				continue;
-			else if(value instanceof Array)
-				value.forEach(function(val){
-					qeries.push(encodeURIComponent(key) + '=' + encodeURIComponent(val));
-				});
-			else
-				qeries.push(encodeURIComponent(key) + '='+ encodeURIComponent(value));
-			}
-		return (question? '?' : '') + qeries.join('&');
-	}
-	function isEmpty(obj){
-		for(var i in obj)
-			return false;
-		return true;
-	}
-	
-	//文字数カウント
-	// 短縮URLフォーマット例: http://t.co/PyyHnoY (19文字、twitter側だと21文字が予約されている) ← これを予約数とする。
-	function char_count(){
-		var s, l;
-		s = document.getElementById("text").value;
-		var reserve = 21;
-		var space = 1;//文とurlの区切り
-		l = 140 - reserve - s.length - space;
-		document.getElementById("char-count").innerHTML = l;
-		document.getElementById("char-count").removeAttribute("style");
-		if(l>=0){
-			document.getElementById("char-count").style.color = " #999";
-			document.getElementById("char-count").style.fontWeight = "bold";
-		}
-		else if(l<0){
-			document.getElementById("char-count").style.color = "#FF0000";
-			document.getElementById("char-count").style.fontWeight = "bold";
-		}
-		LOGD(document.getElementById("char-count"));
-	}
-
-</script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="popup.css" />
+    <script type="text/javascript" src="js/third/jquery-1.8.1.min.js"></script>
+    <script type="text/javascript" src="js/util.js"></script>
+    <script type="text/javascript" src="js/tw.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
 </head>
 <body>
 	<div id='main'>
@@ -230,21 +17,18 @@
 			</h1>
 		</div>
 		<div class="update_area">
-			      <textarea id='text' cols='32' rows='3' onkeyup="char_count();" onkeydown="char_count();"></textarea><br>
+			      <textarea id='text' cols='32' rows='3'></textarea><br>
 			      <input type="text" id='url' cols='32' rows='1'><br>
 		</div>
 		<div class="footter">
 			<span id="char-count"></span>
-			<input type="button" value="Tweet" id="post_button" class="button" onclick='post();'>
-			<input type="hidden" value="Visit twitter.com" id="visit_twitter" class="button" onclick='visit_twitter();'>
+			<input type="button" value="Tweet" id="post_button" class="button">
+			<input type="hidden" value="Visit twitter.com" id="visit_twitter" class="button" >
 			<div id="option" style="">
 				<input type="checkbox" name="create_tab_and_post" id="create_tab_and_post">
 				<label for="c1">Create tab and Post?</label>
 			</div>
 		</div>
-	</div>
-	<div id="info_hidden">
-		<input type="hidden" id="prepare_auth_token">
 	</div>
 </body>
 </html>

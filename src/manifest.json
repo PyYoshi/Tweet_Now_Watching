@@ -1,15 +1,24 @@
 {
-  "update_url":"http://clients2.google.com/service/update2/crx",
-  "name": "Tweet: Now Browsing!",
-  "version": "1.1.1",
-  "description": "Share currently watched web page on Twitter.",
-  "browser_action": {
-    "default_icon": "tw48.png",
-    "popup": "popup.html"
-  },
-   "options_page":"options.html",
-   "icons": {
-     "48": "tw48.png"
-   },
-  "permissions": ["tabs", "http://twitter.com/*", "https://twitter.com/*"]
+    "manifest_version": 2,
+    "update_url":"http://clients2.google.com/service/update2/crx",
+    "name": "Tweet: Now Browsing!",
+    "version": "1.1.1",
+    "description": "Share currently watched web page on Twitter.",
+    "browser_action": {
+        "default_icon": "tw48.png",
+        "default_popup": "popup.html"
+    },
+    "options_page":"options.html",
+    "icons": {
+        "48": "tw48.png"
+    },
+    "permissions": [
+        "tabs",
+        "http://twitter.com/*",
+        "https://twitter.com/*",
+        "notifications"
+    ],
+    "web_accessible_resources": [
+        "tw48.png"
+    ]
 } 
