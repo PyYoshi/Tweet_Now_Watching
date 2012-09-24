@@ -64,7 +64,7 @@ img#tw_png {
 
 .button {
 	-webkit-border-radius: 4px;
-	background: #DDD url(./item/bg-btn.gif) repeat-x 0 0;
+	background: #DDD url(./media/bg-btn.gif) repeat-x 0 0;
 	border-color: #BBB #BBB #999;
 	border-radius: 4px;
 	border-style: solid;

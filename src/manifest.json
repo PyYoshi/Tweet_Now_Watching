@@ -2,23 +2,39 @@
     "manifest_version": 2,
     "update_url":"http://clients2.google.com/service/update2/crx",
     "name": "Tweet: Now Browsing!",
-    "version": "1.1.1",
+    "version": "1.2.0",
     "description": "Share currently watched web page on Twitter.",
     "browser_action": {
-        "default_icon": "tw48.png",
+        "default_icon": "./media/128.png",
         "default_popup": "popup.html"
     },
     "options_page":"options.html",
     "icons": {
-        "48": "tw48.png"
+        "16": "./media/16.png",
+        "48": "./media/48.png",
+        "128": "./media/128.png"
     },
     "permissions": [
-        "tabs",
         "http://twitter.com/*",
         "https://twitter.com/*",
-        "notifications"
+        "tabs",
+        "notifications",
+        "contextMenus"
     ],
     "web_accessible_resources": [
-        "tw48.png"
+        "media/16.png",
+        "media/48.png",
+        "media/128.png"
+    ],
+    "background": {
+        "page":"background.html"
+    },
+    "content_scripts":[
+        {
+            "matches":["http://twitter.com/*","https://twitter.com/*"],
+            "js":[
+                "js/contentscript.js"
+            ]
+        }
     ]
 } 

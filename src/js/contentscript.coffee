@@ -1,0 +1,11 @@
+###
+ログインした後ユーザを待たせない様にするために、
+  twitter.com/*を開いた時にもログインチェックを行うようにする
+###
+chrome.extension.sendMessage(
+  {sendCode:'checkLogin'}
+  (response)->
+    LOGD('バッググランドへログインチェックを行うように命令しました。')
+    LOGD(response)
+    return
+)

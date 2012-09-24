@@ -1,0 +1,9 @@
+やりたいこと
+
+  140字以内であるかのチェックは投稿ボタンが押された時にも行う
+
+  右クリックメニューの追加 http://developer.chrome.com/extensions/contextMenus.html
+
+  投稿エラー時にメッセージとURLを保存し、再度投稿するときに表示する
+
+  i18nに対応
