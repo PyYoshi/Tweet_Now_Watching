@@ -131,6 +131,8 @@ updateStatus = function(msg) {
   return tw.update(msg, function(jqXHR, settings) {
     return ntfPosting.show();
   }, function(data, textStatus, jqXHR) {
+    LOGD(data);
+    LOGD(jqXHR);
     ntfPosting.close();
     ntfDone.show();
     setTimeout(function() {
@@ -138,6 +140,7 @@ updateStatus = function(msg) {
     }, ShowNotificationSecond);
   }, function(jqXHR, textStatus, errorThrown) {
     var ntfError;
+    LOGD(jqXHR);
     ntfPosting.close();
     ntfError = createNotifer('posting... Error', msg);
     ntfError.show();
@@ -274,18 +277,28 @@ addContextMenus = function() {
   LOGD('parentId: ' + parentId);
   childShareContexts = ['page'];
   childShareOnClick = function(onClickData, tab) {
+    var PostHeader, PostHeaderSplitter, StatusUrlSplitter, queryString, status;
     LOGD(onClickData);
     LOGD(tab);
-    chrome.tabs.getSelected(tab.windowId, function(tab) {
-      return LOGD(tab);
-    });
+    PostHeader = getLocalStorage(PostHeaderKey, DefaultPostHeader);
+    PostHeaderSplitter = getLocalStorage(PostHeaderSplitterKey, DefaultPostHeaderSplitter);
+    StatusUrlSplitter = getLocalStorage(StatusUrlSplitterKey, DefaultStatusUrlSplitter);
+    status = genStatusMsg(PostHeader, PostHeaderSplitter, tab.title, StatusUrlSplitter);
+    queryString = '?' + ("status=" + (encodeURIComponent(status)) + "&url=" + (encodeURIComponent(tab.url)));
+    popupWindow(MANIFEST.browser_action.default_popup + queryString);
   };
   childShareId = createContextMenus('Share', childShareContexts, parentId, childShareOnClick, null);
   LOGD('childShareId: ' + childShareId);
   childQuickShareContexts = ['page'];
   childQuickShareContextsOnClick = function(onClickData, tab) {
+    var PostHeader, PostHeaderSplitter, StatusUrlSplitter, status;
     LOGD(onClickData);
     LOGD(tab);
+    PostHeader = getLocalStorage(PostHeaderKey, DefaultPostHeader);
+    PostHeaderSplitter = getLocalStorage(PostHeaderSplitterKey, DefaultPostHeaderSplitter);
+    StatusUrlSplitter = getLocalStorage(StatusUrlSplitterKey, DefaultStatusUrlSplitter);
+    status = genStatusMsg(PostHeader, PostHeaderSplitter, tab.title, StatusUrlSplitter) + tab.url;
+    updateStatus(status);
   };
   childQuickShareId = createContextMenus('Share - Quick', childQuickShareContexts, parentId, childQuickShareContextsOnClick, null);
   LOGD('childQuickShareId: ' + childQuickShareId);
@@ -298,5 +311,5 @@ addContextMenus = function() {
 
 $(function() {
   checkHtml();
-  return addContextMenus();
+  addContextMenus();
 });

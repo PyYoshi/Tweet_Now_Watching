@@ -105,6 +105,8 @@ updateStatus = (msg=null) ->
     (jqXHR, settings) ->
       ntfPosting.show()
     (data, textStatus, jqXHR) ->
+      LOGD(data)
+      LOGD(jqXHR)
       ntfPosting.close()
       ntfDone.show()
       setTimeout(
@@ -116,6 +118,9 @@ updateStatus = (msg=null) ->
       return
     (jqXHR, textStatus, errorThrown) ->
       # TODO: 失敗したらどうするか。エラー時は再投稿を促す？ 通知バーはそのまま。
+      # ステータス更新のエラーはHTTPステータスコードでは判別できない。必ず200で返ってくる。
+      # なので返ってきたjsonデータの投稿ステータスと比較する。 失敗すると投稿する前の最新のステータスが格納されている。
+      LOGD(jqXHR)
       ntfPosting.close()
       ntfError = createNotifer('posting... Error',msg)
       ntfError.show()
@@ -208,13 +213,12 @@ addContextMenus = ()->
   childShareOnClick = (onClickData, tab)->
     LOGD(onClickData)
     LOGD(tab)
-    chrome.tabs.getSelected(
-      tab.windowId
-      (tab)->
-        LOGD(tab)
-
-    )
-
+    PostHeader = getLocalStorage(PostHeaderKey,DefaultPostHeader)
+    PostHeaderSplitter = getLocalStorage(PostHeaderSplitterKey,DefaultPostHeaderSplitter)
+    StatusUrlSplitter = getLocalStorage(StatusUrlSplitterKey,DefaultStatusUrlSplitter)
+    status = genStatusMsg(PostHeader,PostHeaderSplitter,tab.title,StatusUrlSplitter)
+    queryString = '?' + "status=#{encodeURIComponent(status)}&url=#{encodeURIComponent(tab.url)}"
+    popupWindow(MANIFEST.browser_action.default_popup+queryString)
     return
   childShareId = createContextMenus('Share',childShareContexts,parentId,childShareOnClick,null)
   LOGD('childShareId: '+childShareId)
@@ -223,6 +227,11 @@ addContextMenus = ()->
   childQuickShareContextsOnClick = (onClickData, tab)->
     LOGD(onClickData)
     LOGD(tab)
+    PostHeader = getLocalStorage(PostHeaderKey,DefaultPostHeader)
+    PostHeaderSplitter = getLocalStorage(PostHeaderSplitterKey,DefaultPostHeaderSplitter)
+    StatusUrlSplitter = getLocalStorage(StatusUrlSplitterKey,DefaultStatusUrlSplitter)
+    status = genStatusMsg(PostHeader,PostHeaderSplitter,tab.title,StatusUrlSplitter) + tab.url
+    updateStatus(status)
     return
   childQuickShareId = createContextMenus('Share - Quick',childQuickShareContexts,parentId,childQuickShareContextsOnClick,null)
   LOGD('childQuickShareId: '+childQuickShareId)
@@ -231,9 +240,6 @@ addContextMenus = ()->
   childQuoteShareOnClick = (onClickData, tab)->
     LOGD(onClickData)
     LOGD(tab)
-    # window.open(url,name,option)を使うとpopupを開けそう？ http://javascriptist.net/ref/window.open.html
-    # この機能を実装するときはmain.coffeeのonload処理を見直す必要がある。
-    #window.open('hoge.html','I Love Python.','height=200,width=280,menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=no')
     return
   #childQuoteShareId = createContextMenus('Share - Quote',childQuoteShareContexts,parentId,childQuoteShareOnClick,null)
   #LOGD('childQuoteShareId: '+childQuoteShareId)
@@ -242,5 +248,6 @@ $(
   ()->
     checkHtml()
     addContextMenus()
+    return
 )
 

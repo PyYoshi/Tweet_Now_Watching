@@ -16,7 +16,17 @@ countMsg = function() {
   count = MaxMsgLength - (len + ReservedMsgLength);
   $('#char-count').text(count);
   if (count < 0) {
-    return LOGD('文字数オーバー');
+    LOGD('文字数オーバー');
+    $('#logo').text('Your tweet was over 140!');
+    $('.headder').css('background', '-webkit-gradient(linear,left top,left bottom,from(#cc0000),to(#ff3300))');
+    $('span#logo').css('color', '#FFFFFF');
+    return $('#post_button').attr("disabled", "disabled").css('background', '');
+  } else {
+    LOGD('文字数オーバーしていません');
+    $('#logo').text(AppName);
+    $('.headder').css('background', '-webkit-gradient(linear,left top,left bottom,from(#eaf4ff),to(#ffffff))');
+    $('span#logo').css('color', '#999999');
+    return $('#post_button').removeAttr("disabled").css('background', '#DDD url(./media/bg-btn.gif) repeat-x 0 0');
   }
 };
 
@@ -61,7 +71,7 @@ getQueryStringHash = function() {
   for (_i = 0, _len = queries.length; _i < _len; _i++) {
     query = queries[_i];
     hash = query.split('=');
-    hashes["" + hash[0]] = hash[1];
+    hashes["" + hash[0]] = decodeURIComponent(hash[1]);
   }
   LOGD(hashes);
   return hashes;
@@ -75,26 +85,29 @@ $(function() {
   qhash = getQueryStringHash();
   bg = chrome.extension.getBackgroundPage();
   $('#text').bind('keyup change paste', function() {
-    var count, len, txt;
-    txt = $(this).val();
-    len = txt.length;
-    count = MaxMsgLength - (len + ReservedMsgLength);
-    $('#char-count').text(count);
+    countMsg();
   });
   logined = bg.isLogin();
   if (logined) {
     LOGD('ログインしています。');
     chrome.tabs.getSelected(null, function(tab) {
-      var preUpdateStatus;
-      preUpdateStatus = PostHeader + PostHeaderSplitter + cleanPageTitle(tab.title, PostHeader.length);
+      var preUpdateStatus, url;
+      if (qhash.status && qhash.url) {
+        preUpdateStatus = qhash.status;
+        url = qhash.url;
+      } else {
+        preUpdateStatus = genStatusMsg(PostHeader, PostHeaderSplitter, tab.title, StatusUrlSplitter);
+        url = tab.url;
+      }
       $('#text').val(preUpdateStatus);
-      $('#url').val(tab.url);
+      $('#url').val(url);
       countMsg();
       return $('#post_button').click(function() {
-        var updateStatus;
-        updateStatus = $('#text').val() + StatusUrlSplitter + $('#url').val();
-        LOGD(updateStatus);
-        updateMsgPassing(updateStatus);
+        var status;
+        countMsg();
+        status = $('#text').val() + $('#url').val();
+        LOGD(status);
+        updateMsgPassing(status);
         window.close();
       });
     });

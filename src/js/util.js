@@ -9,7 +9,7 @@
 @param msg {String} DEBUGが true: メッセージを表示 false: メッセージは表示されない
 */
 
-var LOGD, cleanPageTitle, getLocalStorage, setLocalStorage;
+var LOGD, genStatusMsg, getLocalStorage, setLocalStorage;
 
 LOGD = function(msg) {
   if (msg == null) {
@@ -21,28 +21,38 @@ LOGD = function(msg) {
 };
 
 /*
-文字制限に合わせてページタイトルを整形する関数
+文字制限に合わせてページタイトルを整形し投稿用メッセージとして返す関数
 
+@param postHeader {String} ポストヘッダー
+@param postHeaderSplitter {String} ポストヘッダーとページタイトルを分ける文字列
 @param title {String} タイトル
-@param postHeaderLength {Number} ポストヘッダーの文字数
-@return {String} 整形済みタイトル
+@param statusUrlSplitter {String} ページタイトルとURLを分ける文字列
+@return {String} 整形済み投稿用メッセージ
 */
 
 
-cleanPageTitle = function(title, postHeaderLength) {
+genStatusMsg = function(postHeader, postHeaderSplitter, title, statusUrlSplitter) {
   var maxTitleLength, threeDots;
+  if (postHeader == null) {
+    postHeader = null;
+  }
+  if (postHeaderSplitter == null) {
+    postHeaderSplitter = null;
+  }
   if (title == null) {
     title = null;
   }
-  if (postHeaderLength == null) {
-    postHeaderLength = 0;
+  if (statusUrlSplitter == null) {
+    statusUrlSplitter = null;
   }
+  LOGD('Cleeeeeeeeeeeeeeeeeeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaan');
   threeDots = '...';
-  maxTitleLength = MaxMsgLength - (ReservedMsgLength + threeDots.length + PostHeaderSpliter.length + postHeaderLength);
+  maxTitleLength = MaxMsgLength - (postHeader.length + postHeaderSplitter.length + statusUrlSplitter.length + ReservedMsgLength);
   if (title.length > maxTitleLength) {
-    title = title.slice(0, maxTitleLength) + threeDots;
+    return postHeader + postHeaderSplitter + title.slice(0, maxTitleLength - threeDots.length) + threeDots + statusUrlSplitter;
+  } else {
+    return postHeader + postHeaderSplitter + title + statusUrlSplitter;
   }
-  return title;
 };
 
 /*

@@ -11,17 +11,22 @@ LOGD = (msg=null) ->
   if DEBUG is true then console.log(msg)
 
 ###
-文字制限に合わせてページタイトルを整形する関数
+文字制限に合わせてページタイトルを整形し投稿用メッセージとして返す関数
 
+@param postHeader {String} ポストヘッダー
+@param postHeaderSplitter {String} ポストヘッダーとページタイトルを分ける文字列
 @param title {String} タイトル
-@param postHeaderLength {Number} ポストヘッダーの文字数
-@return {String} 整形済みタイトル
+@param statusUrlSplitter {String} ページタイトルとURLを分ける文字列
+@return {String} 整形済み投稿用メッセージ
 ###
-cleanPageTitle = (title=null,postHeaderLength=0) ->
+genStatusMsg = (postHeader=null,postHeaderSplitter=null,title=null,statusUrlSplitter=null) ->
+  LOGD('Cleeeeeeeeeeeeeeeeeeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaan')
   threeDots = '...'
-  maxTitleLength = MaxMsgLength - (ReservedMsgLength + threeDots.length + PostHeaderSpliter.length + postHeaderLength)
-  if title.length > maxTitleLength then title = title.slice(0,maxTitleLength) + threeDots
-  return title
+  maxTitleLength = MaxMsgLength - (postHeader.length+postHeaderSplitter.length+statusUrlSplitter.length+ReservedMsgLength)
+  if title.length > maxTitleLength
+    return postHeader+postHeaderSplitter+title.slice(0,maxTitleLength-threeDots.length)+threeDots+statusUrlSplitter
+  else
+    return postHeader+postHeaderSplitter+title+statusUrlSplitter
 
 ###
 localStorageから値を取得する関数

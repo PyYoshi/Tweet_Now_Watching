@@ -5,7 +5,7 @@ AppName = MANIFEST.name
 MaxMsgLength = 140
 TwitterLoginUrl = 'https://twitter.com/login'
 AccessUrl = 'http://twitter.com/intent/tweet'
-DefaultReservedMsgLength = 20
+ReservedMsgLength = 20
 # 初期値
 DefaultPostHeader = 'NowBrowsing'
 DefaultPostHeaderSplitter = ': '

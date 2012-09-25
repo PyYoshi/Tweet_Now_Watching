@@ -33,7 +33,7 @@
         {
             "matches":["http://twitter.com/*","https://twitter.com/*"],
             "js":[
-                "js/contentscript.js"
+                "js/tweetnowbrowsing.js","js/util.js","js/contentscript.js"
             ]
         }
     ]

@@ -13,8 +13,16 @@ countMsg = () ->
   $('#char-count').text(count)
   if count < 0
     LOGD('文字数オーバー')
-    # TODO: 投稿ボタンの無効化
-
+    $('#logo').text('Your tweet was over 140!')
+    $('.headder').css('background','-webkit-gradient(linear,left top,left bottom,from(#cc0000),to(#ff3300))')
+    $('span#logo').css('color','#FFFFFF')
+    $('#post_button').attr("disabled", "disabled").css('background','')
+  else
+    LOGD('文字数オーバーしていません')
+    $('#logo').text(AppName)
+    $('.headder').css('background','-webkit-gradient(linear,left top,left bottom,from(#eaf4ff),to(#ffffff))')
+    $('span#logo').css('color','#999999')
+    $('#post_button').removeAttr("disabled").css('background','#DDD url(./media/bg-btn.gif) repeat-x 0 0')
 
 ###
 バッググラウンドへ投稿するメッセージを送信する関数
@@ -46,12 +54,13 @@ getQueryStringHash = () ->
   LOGD(queries)
   for query in queries
     hash = query.split('=')
-    hashes["#{hash[0]}"] = hash[1]
+    hashes["#{hash[0]}"] = decodeURIComponent(hash[1])
   LOGD(hashes)
   return hashes
 
 $(
   ()->
+    # 設定の読み出し
     PostHeader = getLocalStorage(PostHeaderKey,DefaultPostHeader)
     PostHeaderSplitter = getLocalStorage(PostHeaderSplitterKey,DefaultPostHeaderSplitter)
     StatusUrlSplitter = getLocalStorage(StatusUrlSplitterKey,DefaultStatusUrlSplitter)
@@ -61,10 +70,7 @@ $(
     bg = chrome.extension.getBackgroundPage()
     # 文字数チェックイベント
     $('#text').bind('keyup change paste',()->
-      txt = $(@).val()
-      len = txt.length
-      count = MaxMsgLength - (len + ReservedMsgLength)
-      $('#char-count').text(count)
+      countMsg()
       return
     )
     #ログインチェック
@@ -74,15 +80,22 @@ $(
       chrome.tabs.getSelected(null,
         (tab)->
           # この関数内の処理を細分化したい
-          preUpdateStatus = PostHeader + PostHeaderSplitter + cleanPageTitle(tab.title, PostHeader.length)
+          if qhash.status and qhash.url
+            preUpdateStatus = qhash.status
+            url = qhash.url
+          else
+            preUpdateStatus = genStatusMsg(PostHeader,PostHeaderSplitter,tab.title,StatusUrlSplitter)
+            url = tab.url
           $('#text').val(preUpdateStatus)
-          $('#url').val(tab.url)
+          $('#url').val(url)
           countMsg()
           $('#post_button').click(
             ()->
-              updateStatus = $('#text').val()+StatusUrlSplitter+$('#url').val()
-              LOGD(updateStatus)
-              updateMsgPassing(updateStatus)
+              countMsg()
+              #nowCount = parseInt($('#char-count').text())
+              status = $('#text').val()+$('#url').val()
+              LOGD(status)
+              updateMsgPassing(status)
               window.close()
               return
           )
