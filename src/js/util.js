@@ -45,7 +45,6 @@ genStatusMsg = function(postHeader, postHeaderSplitter, title, statusUrlSplitter
   if (statusUrlSplitter == null) {
     statusUrlSplitter = null;
   }
-  LOGD('Cleeeeeeeeeeeeeeeeeeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaan');
   threeDots = '...';
   maxTitleLength = MaxMsgLength - (postHeader.length + postHeaderSplitter.length + statusUrlSplitter.length + ReservedMsgLength);
   if (title.length > maxTitleLength) {
@@ -98,7 +97,7 @@ setLocalStorage = function(targetKey, value) {
     return false;
   }
   try {
-    localStorage["" + targetkey] = value;
+    localStorage["" + targetKey] = value;
     return true;
   } catch (error) {
     LOGD('=== localStorageへ値を正常にセットできませんでした ===');

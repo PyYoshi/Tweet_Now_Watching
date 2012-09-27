@@ -20,7 +20,6 @@ LOGD = (msg=null) ->
 @return {String} 整形済み投稿用メッセージ
 ###
 genStatusMsg = (postHeader=null,postHeaderSplitter=null,title=null,statusUrlSplitter=null) ->
-  LOGD('Cleeeeeeeeeeeeeeeeeeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaan')
   threeDots = '...'
   maxTitleLength = MaxMsgLength - (postHeader.length+postHeaderSplitter.length+statusUrlSplitter.length+ReservedMsgLength)
   if title.length > maxTitleLength
@@ -53,7 +52,7 @@ setLocalStorage = (targetKey,value=null)->
   if targetKey is '' or typeof targetKey is 'undefined' or targetKey is null then return false
   if value is '' or typeof value is 'undefined' then return false
   try
-    localStorage["#{targetkey}"] = value
+    localStorage["#{targetKey}"] = value
     return true
   catch error
     LOGD('=== localStorageへ値を正常にセットできませんでした ===')

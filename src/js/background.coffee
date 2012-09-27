@@ -51,6 +51,7 @@ checkHtml = (repeat=true) ->
       tw.login = tw.isLogin()
       if tw.login
         tw.authToken = tw.getAuthToken()
+        tw.screenName = tw.getUserScreenName()
         color = [65, 131, 196, 255]
         badge = ''
         title = AppName
@@ -93,6 +94,11 @@ createNotifer = (title=null,body=null)->
   return ntf
 
 ###
+###
+getUserLatestPost = (screenName,call) ->
+
+
+###
 Twitter Web APIで投稿する関数
 
 @param msg {String} 投稿するメッセージ
@@ -107,6 +113,9 @@ updateStatus = (msg=null) ->
     (data, textStatus, jqXHR) ->
       LOGD(data)
       LOGD(jqXHR)
+      tw.screenName
+      if true # 厳密チェック
+        LOGD()
       ntfPosting.close()
       ntfDone.show()
       setTimeout(
@@ -248,6 +257,7 @@ $(
   ()->
     checkHtml()
     addContextMenus()
+
     return
 )
 

@@ -3,10 +3,60 @@
 @author PyYoshi
 */
 
-var Option;
+var resetOptions, restoreOptions, saveOptions;
 
-Option = function() {};
+saveOptions = function() {
+  LOGD('save');
+  setLocalStorage(PostHeaderKey, $('#customPostHeader').val());
+  setLocalStorage(PostHeaderSplitterKey, $('#customPostHeaderSplitter').val());
+  setLocalStorage(StatusUrlSplitterKey, $('#customStatusUrlSplitter').val());
+  $('#status').text('Saved it!').css('display', 'block');
+  setInterval(function() {
+    $('#status').text('').css('display', 'none');
+  }, 5000);
+};
 
-Option.saveOptions = function() {};
+restoreOptions = function() {
+  LOGD('restore');
+  $('#customPostHeader').val(getLocalStorage(PostHeaderKey, DefaultPostHeader));
+  $('#customPostHeaderSplitter').val(getLocalStorage(PostHeaderSplitterKey, DefaultPostHeaderSplitter));
+  $('#customStatusUrlSplitter').val(getLocalStorage(StatusUrlSplitterKey, DefaultStatusUrlSplitter));
+};
 
-Option.restoreOptions = function() {};
+resetOptions = function(confirm) {
+  LOGD('reset');
+  if (confirm) {
+    LOGD('設定を初期化します。');
+    setLocalStorage(PostHeaderKey, DefaultPostHeader);
+    setLocalStorage(PostHeaderSplitterKey, DefaultPostHeaderSplitter);
+    setLocalStorage(StatusUrlSplitterKey, DefaultStatusUrlSplitter);
+    restoreOptions();
+    $('#status').text('Reseted it!').css('display', 'block');
+    setInterval(function() {
+      $('#status').text('').css('display', 'none');
+    }, 5000);
+  }
+};
+
+$(function() {
+  restoreOptions();
+  $('.customPostHeader').mouseover(function() {
+    LOGD('.customPostHeader');
+  });
+  $('.customPostHeaderSplitter').mouseover(function() {
+    LOGD('.customPostHeaderSplitter');
+  });
+  $('.customStatusUrlSplitter').mouseover(function() {
+    LOGD('.customStatusUrlSplitter');
+  });
+  $('#resetButton').click(function() {
+    var ans;
+    LOGD('リセットボタンが押されました');
+    ans = confirm('Are you sure you want to reset setting?');
+    resetOptions(ans);
+  });
+  return $('#saveButton').click(function() {
+    LOGD('セーブボタンが押されました');
+    saveOptions();
+  });
+});

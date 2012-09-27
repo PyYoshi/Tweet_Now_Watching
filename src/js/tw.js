@@ -3,21 +3,11 @@
 @author PyYoshi
 */
 
-var TwitterBase, TwitterWeb;
-
-TwitterBase = (function() {
-
-  function TwitterBase() {}
-
-  LOGD();
-
-  return TwitterBase;
-
-})();
+var TwitterWeb;
 
 TwitterWeb = (function() {
 
-  function TwitterWeb(twitterHtml, login, authToken, ssl) {
+  function TwitterWeb(twitterHtml, login, authToken, screenName, ssl) {
     if (twitterHtml == null) {
       twitterHtml = null;
     }
@@ -26,6 +16,9 @@ TwitterWeb = (function() {
     }
     if (authToken == null) {
       authToken = null;
+    }
+    if (screenName == null) {
+      screenName = null;
     }
     if (ssl == null) {
       ssl = true;
@@ -40,16 +33,23 @@ TwitterWeb = (function() {
       this.twitterHtmlDiv.innerHTML = '';
       this.login = login;
       this.authToken = authToken;
+      this.screenName = screenName;
     } else {
       this.twitterHtmlDiv.innerHTML = twitterHtml;
       this.login = this.isLogin();
-      this.authToken = this.getAuthToken();
+      if (this.login) {
+        this.authToken = this.getAuthToken();
+        this.screenName = this.getUserScreenName();
+      } else {
+        this.authToken = null;
+        this.screenName = null;
+      }
     }
+    return;
   }
 
   TwitterWeb.prototype.isLogin = function() {
     var passwordElementLength, usernameEmailElementLength;
-    LOGD(this.twitterHtmlDiv);
     usernameEmailElementLength = document.evaluate('.//input[@id="username_or_email"]', this.twitterHtmlDiv, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null).snapshotLength;
     passwordElementLength = document.evaluate('.//input[@id="password"]', this.twitterHtmlDiv, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null).snapshotLength;
     LOGD("usernameEmailElementLength: " + usernameEmailElementLength);
@@ -62,10 +62,16 @@ TwitterWeb = (function() {
 
   TwitterWeb.prototype.getAuthToken = function() {
     var authToken;
-    LOGD(this.twitterHtmlDiv);
     authToken = document.evaluate('.//input[@name="authenticity_token"]', this.twitterHtmlDiv, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0).value;
     LOGD('authToken: ' + authToken);
     return authToken;
+  };
+
+  TwitterWeb.prototype.getUserScreenName = function() {
+    var screenName;
+    screenName = document.evaluate('.//h2[@class="current-user"]/a/span[@class="name"]', this.twitterHtmlDiv, null, XPathResult.STRING_TYPE, null).stringValue;
+    LOGD('screenName: ' + screenName);
+    return screenName;
   };
 
   TwitterWeb.prototype.update = function(msg, beforeSendHandler, successHandler, errorHandler) {
@@ -92,13 +98,13 @@ TwitterWeb = (function() {
       dataType: 'json',
       data: prepareData,
       beforeSend: function(jqXHR, settings) {
-        return beforeSendHandler(jqXHR, settings);
+        beforeSendHandler(jqXHR, settings);
       },
       error: function(jqXHR, textStatus, errorThrown) {
-        return errorHandler(jqXHR, textStatus, errorThrown);
+        errorHandler(jqXHR, textStatus, errorThrown);
       },
       success: function(data, textStatus, jqXHR) {
-        return successHandler(data, textStatus, jqXHR);
+        successHandler(data, textStatus, jqXHR);
       }
     });
   };
