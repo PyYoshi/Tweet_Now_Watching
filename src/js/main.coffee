@@ -93,10 +93,13 @@ $(
             ()->
               countMsg()
               #nowCount = parseInt($('#char-count').text())
-              status = $('#text').val()+$('#url').val()
               LOGD(status)
-              updateMsgPassing(status)
-              window.close()
+              status = $('#text').val()+$('#url').val()
+              if $('#create_tab_and_post').is(':checked')
+                chrome.tabs.create({url:'https://twitter.com/intent/tweet?source=webclient&text='+encodeURIComponent(status)})
+              else
+                updateMsgPassing(status)
+                window.close()
               return
           )
       )

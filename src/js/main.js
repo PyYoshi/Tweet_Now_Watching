@@ -105,10 +105,16 @@ $(function() {
       return $('#post_button').click(function() {
         var status;
         countMsg();
-        status = $('#text').val() + $('#url').val();
         LOGD(status);
-        updateMsgPassing(status);
-        window.close();
+        status = $('#text').val() + $('#url').val();
+        if ($('#create_tab_and_post').is(':checked')) {
+          chrome.tabs.create({
+            url: 'https://twitter.com/intent/tweet?source=webclient&text=' + encodeURIComponent(status)
+          });
+        } else {
+          updateMsgPassing(status);
+          window.close();
+        }
       });
     });
   } else if (logined === false) {
