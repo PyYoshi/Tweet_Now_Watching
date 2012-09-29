@@ -1,0 +1,28 @@
+{
+    "extName": {
+        "message": "Tweet: Now Browsing!"
+    },
+    "extDescription": {
+        "message": "Share currently viewed page on Twitter."
+    },
+    "Option_customPostHeader":{
+        "message":"Post Header:",
+        "description":""
+    },
+    "Option_customPostHeaderSplitter":{
+        "message":"Post Header Splitter:",
+        "description":""
+    },
+    "Option_customStatusUrlSplitter":{
+        "message":"Status-URL Splitter:",
+        "description":""
+    },
+    "Option_resetButton":{
+        "message":"Reset",
+        "description":""
+    },
+    "Option_saveButton":{
+        "message":"Save",
+        "description":""
+    }
+}

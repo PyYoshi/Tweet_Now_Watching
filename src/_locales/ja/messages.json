@@ -1,0 +1,28 @@
+{
+    "extName": {
+        "message": "Tweet: Now Browsing!"
+    },
+    "extDescription": {
+        "message": "今見ているページをTwitterに投稿します！"
+    },
+    "Option_customPostHeader":{
+        "message":"ポストヘッダー",
+        "description":""
+    },
+    "Option_customPostHeaderSplitter":{
+        "message":"ポストヘッダーとページタイトルを分割する文字列",
+        "description":""
+    },
+    "Option_customStatusUrlSplitter":{
+        "message":"ページタイトルとURLを分割する文字列",
+        "description":""
+    },
+    "Option_resetButton":{
+        "message":"リセット",
+        "description":""
+    },
+    "Option_saveButton":{
+        "message":"適用",
+        "description":""
+    }
+}
