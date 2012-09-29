@@ -70,6 +70,8 @@ $(
     qhash = getQueryStringHash()
     #バッググラウンドスクリプト
     bg = chrome.extension.getBackgroundPage()
+    # テキストエリアへフォーカス
+    $('#text').focus()
     # 文字数チェックイベント
     $('#text').bind('keyup change paste',()->
       countMsg()

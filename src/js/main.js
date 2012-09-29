@@ -84,6 +84,7 @@ $(function() {
   StatusUrlSplitter = getLocalStorage(StatusUrlSplitterKey, DefaultStatusUrlSplitter);
   qhash = getQueryStringHash();
   bg = chrome.extension.getBackgroundPage();
+  $('#text').focus();
   $('#text').bind('keyup change paste', function() {
     countMsg();
   });
