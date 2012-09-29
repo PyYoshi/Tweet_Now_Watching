@@ -93,7 +93,7 @@ setLocalStorage = function(targetKey, value) {
   if (targetKey === '' || typeof targetKey === 'undefined' || targetKey === null) {
     return false;
   }
-  if (value === '' || typeof value === 'undefined') {
+  if (typeof value === 'undefined') {
     return false;
   }
   try {

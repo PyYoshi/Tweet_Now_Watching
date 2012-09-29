@@ -50,7 +50,7 @@ localStorageへ値をセットする関数
 ###
 setLocalStorage = (targetKey,value=null)->
   if targetKey is '' or typeof targetKey is 'undefined' or targetKey is null then return false
-  if value is '' or typeof value is 'undefined' then return false
+  if typeof value is 'undefined' then return false
   try
     localStorage["#{targetKey}"] = value
     return true
