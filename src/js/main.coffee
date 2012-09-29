@@ -23,6 +23,7 @@ countMsg = () ->
     $('.headder').css('background','-webkit-gradient(linear,left top,left bottom,from(#eaf4ff),to(#ffffff))')
     $('span#logo').css('color','#999999')
     $('#post_button').removeAttr("disabled").css('background','#DDD url(./media/bg-btn.gif) repeat-x 0 0')
+  return
 
 ###
 バッググラウンドへ投稿するメッセージを送信する関数
@@ -40,6 +41,7 @@ updateMsgPassing = (msg=null) ->
       LOGD(response)
       return
   )
+  return
 
 ###
 現在のロケーションからクエリーを取得する関数
@@ -102,7 +104,17 @@ $(
                 window.close()
               return
           )
+          $('body').keypress(
+            (event)->
+              LOGD(event)
+              if event.ctrlKey and (event.keyCode is 13 or event.keyCode is 10)
+                LOGD('Ctrl+Enterが押されました')
+                $('#post_button').trigger('click')
+              return
+          )
+          return
       )
+
     else if logined is false
       LOGD('ログインしていません。')
       chrome.tabs.create({'url':TwitterLoginUrl})
@@ -113,5 +125,6 @@ $(
 
     LOGD(getQueryStringHash())
     return
+    #
 )
 

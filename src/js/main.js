@@ -20,13 +20,13 @@ countMsg = function() {
     $('#logo').text('Your tweet was over 140!');
     $('.headder').css('background', '-webkit-gradient(linear,left top,left bottom,from(#cc0000),to(#ff3300))');
     $('span#logo').css('color', '#FFFFFF');
-    return $('#post_button').attr("disabled", "disabled").css('background', '');
+    $('#post_button').attr("disabled", "disabled").css('background', '');
   } else {
     LOGD('文字数オーバーしていません');
     $('#logo').text(AppName);
     $('.headder').css('background', '-webkit-gradient(linear,left top,left bottom,from(#eaf4ff),to(#ffffff))');
     $('span#logo').css('color', '#999999');
-    return $('#post_button').removeAttr("disabled").css('background', '#DDD url(./media/bg-btn.gif) repeat-x 0 0');
+    $('#post_button').removeAttr("disabled").css('background', '#DDD url(./media/bg-btn.gif) repeat-x 0 0');
   }
 };
 
@@ -46,7 +46,7 @@ updateMsgPassing = function(msg) {
     msg: msg,
     sendCode: 'updateStatus'
   };
-  return chrome.extension.sendMessage(sendObject, function(response) {
+  chrome.extension.sendMessage(sendObject, function(response) {
     LOGD('バッググランドへメッセージを投稿するように命令しました。');
     LOGD(response);
   });
@@ -102,7 +102,7 @@ $(function() {
       $('#text').val(preUpdateStatus);
       $('#url').val(url);
       countMsg();
-      return $('#post_button').click(function() {
+      $('#post_button').click(function() {
         var status;
         countMsg();
         LOGD(status);
@@ -114,6 +114,13 @@ $(function() {
         } else {
           updateMsgPassing(status);
           window.close();
+        }
+      });
+      $('body').keypress(function(event) {
+        LOGD(event);
+        if (event.ctrlKey && (event.keyCode === 13 || event.keyCode === 10)) {
+          LOGD('Ctrl+Enterが押されました');
+          $('#post_button').trigger('click');
         }
       });
     });
