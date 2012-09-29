@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "update_url":"http://clients2.google.com/service/update2/crx",
     "name": "Tweet: Now Browsing!",
-    "version": "1.2.0",
+    "version": "1.2.2",
     "description": "Share currently watched web page on Twitter.",
     "browser_action": {
         "default_icon": "./media/128.png",
