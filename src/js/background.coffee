@@ -105,7 +105,7 @@ Twitter Web APIで投稿する関数
 ###
 updateStatus = (msg=null) ->
   ntfPosting = createNotifer('posting...',msg)
-  ntfDone = createNotifer('posting... Done',msg)
+  #ntfDone = createNotifer('posting... Done',msg)
   tw.update(
     msg
     (jqXHR, settings) ->
@@ -117,13 +117,13 @@ updateStatus = (msg=null) ->
       if true # 厳密チェック
         LOGD()
       ntfPosting.close()
-      ntfDone.show()
-      setTimeout(
-        ()->
-          ntfDone.close()
-          return
-        ShowNotificationSecond
-      )
+      #ntfDone.show()
+      #setTimeout(
+      #  ()->
+      #    ntfDone.close()
+      #    return
+      #  ShowNotificationSecond
+      #)
       return
     (jqXHR, textStatus, errorThrown) ->
       # TODO: 失敗したらどうするか。エラー時は再投稿を促す？ 通知バーはそのまま。

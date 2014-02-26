@@ -1,5 +1,5 @@
 # 設定
-DEBUG = true
+DEBUG = false
 MANIFEST = chrome.app.getDetails()
 AppName = MANIFEST.name
 MaxMsgLength = 140
@@ -19,9 +19,3 @@ DelayAccessSecondKey = 'delayAccessSecond'
 StatusUrlSplitterKey = 'statusUrlSplitter'
 DelayAccessSecondKey = 'delayAccessSecond'
 ShowNotificationSecondKey = 'showNotificationSecond'
-
-
-
-
-
-
