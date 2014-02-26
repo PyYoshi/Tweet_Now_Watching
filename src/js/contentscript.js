@@ -10,3 +10,5 @@ chrome.extension.sendMessage({
   LOGD('バッググランドへログインチェックを行うように命令しました。');
   LOGD(response);
 });
+
+//# sourceMappingURL=contentscript.map

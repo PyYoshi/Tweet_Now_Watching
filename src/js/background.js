@@ -129,13 +129,14 @@ Twitter Web APIで投稿する関数
  */
 
 updateStatus = function(msg) {
-  var ntfPosting;
+  var ntfDone, ntfPosting;
   if (msg == null) {
     msg = null;
   }
   ntfPosting = createNotifer('posting...', msg);
+  ntfDone = createNotifer('posting... Done', msg);
   return tw.update(msg, function(jqXHR, settings) {
-    return ntfPosting.show();
+    ntfPosting.show();
   }, function(data, textStatus, jqXHR) {
     LOGD(data);
     LOGD(jqXHR);
@@ -143,11 +144,15 @@ updateStatus = function(msg) {
     if (true) {
       LOGD();
     }
-    ntfPosting.close();
+    ntfPosting.cancel();
+    ntfDone.show();
+    setTimeout(function() {
+      ntfDone.cancel();
+    }, ShowNotificationSecond);
   }, function(jqXHR, textStatus, errorThrown) {
     var ntfError;
     LOGD(jqXHR);
-    ntfPosting.close();
+    ntfPosting.cancel();
     ntfError = createNotifer('posting... Error', msg);
     ntfError.show();
   });
@@ -319,3 +324,5 @@ $(function() {
   checkHtml();
   addContextMenus();
 });
+
+//# sourceMappingURL=background.map

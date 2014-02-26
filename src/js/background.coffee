@@ -105,32 +105,33 @@ Twitter Web APIで投稿する関数
 ###
 updateStatus = (msg=null) ->
   ntfPosting = createNotifer('posting...',msg)
-  #ntfDone = createNotifer('posting... Done',msg)
+  ntfDone = createNotifer('posting... Done',msg)
   tw.update(
-    msg
+    msg,
     (jqXHR, settings) ->
       ntfPosting.show()
+      return
     (data, textStatus, jqXHR) ->
       LOGD(data)
       LOGD(jqXHR)
       tw.screenName
       if true # 厳密チェック
         LOGD()
-      ntfPosting.close()
-      #ntfDone.show()
-      #setTimeout(
-      #  ()->
-      #    ntfDone.close()
-      #    return
-      #  ShowNotificationSecond
-      #)
+      ntfPosting.cancel()
+      ntfDone.show()
+      setTimeout(
+        ()->
+          ntfDone.cancel()
+          return
+        ShowNotificationSecond
+      )
       return
     (jqXHR, textStatus, errorThrown) ->
       # TODO: 失敗したらどうするか。エラー時は再投稿を促す？ 通知バーはそのまま。
       # ステータス更新のエラーはHTTPステータスコードでは判別できない。必ず200で返ってくる。
       # なので返ってきたjsonデータの投稿ステータスと比較する。 失敗すると投稿する前の最新のステータスが格納されている。
       LOGD(jqXHR)
-      ntfPosting.close()
+      ntfPosting.cancel()
       ntfError = createNotifer('posting... Error',msg)
       ntfError.show()
       return

@@ -60,3 +60,5 @@ $(function() {
     saveOptions();
   });
 });
+
+//# sourceMappingURL=option.map
