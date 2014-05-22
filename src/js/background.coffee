@@ -79,21 +79,6 @@ checkHtml = (repeat=true) ->
   return
 
 ###
-Desktop Notificationを作成する関数
-
-@param title {String} Notificationに表示するタイトル(拡張名はセットしないこと)
-@param body {String} Notificationに表示する本文(Not html)
-@return {Notification} Notificationオブジェクト
-###
-createNotifer = (title=null,body=null)->
-  ntf = webkitNotifications.createNotification(
-    'media/48.png'
-    title
-    body
-  )
-  return ntf
-
-###
 ###
 getUserLatestPost = (screenName,call) ->
 
@@ -104,12 +89,23 @@ Twitter Web APIで投稿する関数
 @param msg {String} 投稿するメッセージ
 ###
 updateStatus = (msg=null) ->
-  ntfPosting = createNotifer('posting...',msg)
-  ntfDone = createNotifer('posting... Done',msg)
+  ntf_id = 0
+  ntf_opts = {
+    type: 'basic',
+    title: null,
+    message: msg,
+    iconUrl: 'media/48.png'
+  }
+  ntf_title_posting = 'posting...'
+  ntf_title_done = 'posting... Done'
+  ntf_title_error = 'posting... Error'
+
   tw.update(
     msg,
     (jqXHR, settings) ->
-      ntfPosting.show()
+      ntf_opts_posting = ntf_opts
+      ntf_opts_posting['title'] = ntf_title_posting
+      chrome.notifications.create(ntf_id, ntf_opts_posting, ()->)
       return
     (data, textStatus, jqXHR) ->
       LOGD(data)
@@ -117,11 +113,12 @@ updateStatus = (msg=null) ->
       tw.screenName
       if true # 厳密チェック
         LOGD()
-      ntfPosting.cancel()
-      ntfDone.show()
+      ntf_opts_done = ntf_opts
+      ntf_opts_done['title'] = ntf_title_done
+      chrome.notifications.update(ntf_id, ntf_opts_done, ()->)
       setTimeout(
         ()->
-          ntfDone.cancel()
+          chrome.notifications.clear(ntf_id, ()->)
           return
         ShowNotificationSecond
       )
@@ -131,9 +128,9 @@ updateStatus = (msg=null) ->
       # ステータス更新のエラーはHTTPステータスコードでは判別できない。必ず200で返ってくる。
       # なので返ってきたjsonデータの投稿ステータスと比較する。 失敗すると投稿する前の最新のステータスが格納されている。
       LOGD(jqXHR)
-      ntfPosting.cancel()
-      ntfError = createNotifer('posting... Error',msg)
-      ntfError.show()
+      ntf_opts_error = ntf_opts
+      ntf_opts_error['title'] = ntf_title_error
+      chrome.notifications.update(ntf_id, ntf_opts_error, ()->)
       return
   )
 
@@ -261,4 +258,3 @@ $(
 
     return
 )
-
