@@ -89,7 +89,7 @@ Twitter Web APIで投稿する関数
 @param msg {String} 投稿するメッセージ
 ###
 updateStatus = (msg=null) ->
-  ntf_id = 0
+  ntf_id = '1'
   ntf_opts = {
     type: 'basic',
     title: null,

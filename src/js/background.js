@@ -112,7 +112,7 @@ updateStatus = function(msg) {
   if (msg == null) {
     msg = null;
   }
-  ntf_id = 0;
+  ntf_id = '1';
   ntf_opts = {
     type: 'basic',
     title: null,
