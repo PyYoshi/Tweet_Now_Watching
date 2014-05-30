@@ -106,10 +106,10 @@ $(
                 window.close()
               return
           )
-          $('body').keypress(
+          $('body').keydown(
             (event)->
               LOGD(event)
-              if event.ctrlKey and (event.keyCode is 13 or event.keyCode is 10)
+              if (event.metaKey || event.ctrlKey) and (event.keyCode == 13 || event.keyCode == 10)
                 LOGD('Ctrl+Enterが押されました')
                 $('#post_button').trigger('click')
               return
@@ -129,4 +129,3 @@ $(
     return
     #
 )
-

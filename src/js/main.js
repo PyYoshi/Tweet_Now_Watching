@@ -117,9 +117,9 @@ $(function() {
           window.close();
         }
       });
-      $('body').keypress(function(event) {
+      $('body').keydown(function(event) {
         LOGD(event);
-        if (event.ctrlKey && (event.keyCode === 13 || event.keyCode === 10)) {
+        if ((event.metaKey || event.ctrlKey) && (event.keyCode === 13 || event.keyCode === 10)) {
           LOGD('Ctrl+Enterが押されました');
           $('#post_button').trigger('click');
         }
@@ -137,5 +137,3 @@ $(function() {
   }
   LOGD(getQueryStringHash());
 });
-
-//# sourceMappingURL=main.map
