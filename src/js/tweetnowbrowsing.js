@@ -13,7 +13,7 @@ TwitterLoginUrl = 'https://twitter.com/login';
 
 AccessUrl = 'http://twitter.com/intent/tweet';
 
-ReservedMsgLength = 20;
+ReservedMsgLength = 35;
 
 DefaultPostHeader = 'NowBrowsing';
 
@@ -23,7 +23,7 @@ DefaultStatusUrlSplitter = ' - ';
 
 DefaultDelayAccessSecond = 60 * 1000;
 
-DefaultShowNotificationSecond = 3 * 1000;
+DefaultShowNotificationSecond = 2 * 1000;
 
 PostHeaderKey = 'postHeader';
 
@@ -36,5 +36,3 @@ StatusUrlSplitterKey = 'statusUrlSplitter';
 DelayAccessSecondKey = 'delayAccessSecond';
 
 ShowNotificationSecondKey = 'showNotificationSecond';
-
-//# sourceMappingURL=tweetnowbrowsing.map
