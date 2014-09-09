@@ -87,7 +87,7 @@ TwitterWeb = (function() {
     if (errorHandler == null) {
       errorHandler = null;
     }
-    postApiUrl = this.scheme + '://twitter.com/status/update';
+    postApiUrl = this.scheme + '://twitter.com/intent/tweet/update';
     prepareData = {
       authenticity_token: this.authToken,
       status: msg
@@ -111,5 +111,3 @@ TwitterWeb = (function() {
   return TwitterWeb;
 
 })();
-
-//# sourceMappingURL=tw.map

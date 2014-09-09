@@ -44,7 +44,7 @@ class TwitterWeb
     return screenName
 
   update: (msg=null,beforeSendHandler=null,successHandler=null,errorHandler=null)->
-    postApiUrl = @scheme + '://twitter.com/status/update'
+    postApiUrl = @scheme + '://twitter.com/intent/tweet/update'
     prepareData =
       authenticity_token:@authToken
       status:msg
