@@ -144,6 +144,8 @@ updateStatus = function(msg) {
   }, function(jqXHR, textStatus, errorThrown) {
     var ntf_opts_error;
     LOGD(jqXHR);
+    LOGD(textStatus);
+    LOGD(errorThrown);
     ntf_opts_error = ntf_opts;
     ntf_opts_error['title'] = ntf_title_error;
     chrome.notifications.update(ntf_id, ntf_opts_error, function() {});

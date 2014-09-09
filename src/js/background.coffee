@@ -128,6 +128,8 @@ updateStatus = (msg=null) ->
       # ステータス更新のエラーはHTTPステータスコードでは判別できない。必ず200で返ってくる。
       # なので返ってきたjsonデータの投稿ステータスと比較する。 失敗すると投稿する前の最新のステータスが格納されている。
       LOGD(jqXHR)
+      LOGD(textStatus)
+      LOGD(errorThrown)
       ntf_opts_error = ntf_opts
       ntf_opts_error['title'] = ntf_title_error
       chrome.notifications.update(ntf_id, ntf_opts_error, ()->)

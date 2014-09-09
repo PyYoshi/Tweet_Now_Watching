@@ -94,7 +94,6 @@ TwitterWeb = (function() {
     };
     return $.ajax(postApiUrl, {
       type: 'POST',
-      dataType: 'json',
       data: prepareData,
       beforeSend: function(jqXHR, settings) {
         beforeSendHandler(jqXHR, settings);

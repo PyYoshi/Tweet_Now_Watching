@@ -50,7 +50,6 @@ class TwitterWeb
       status:msg
     $.ajax postApiUrl,
       type: 'POST'
-      dataType:'json'
       data:prepareData
       beforeSend: (jqXHR, settings)->
         beforeSendHandler(jqXHR, settings)
